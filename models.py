@@ -8,6 +8,13 @@ db = create_engine("sqlite:///banco.db")
 # cria a base do banco de dados
 Base = declarative_base()
 
+
+
+# Clean the table USERS
+# session=get_session()
+# session.query(User).delete()
+# session.commit()
+
 # criar as classes/tabelas do banco de dados
 class User(Base):  # USUARIO
     __tablename__ = "USERS"

@@ -2,10 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from models import User
 from dependencies import get_session
 from main import bcrypt_context
-from schemas import UserSchema
+from schemas import UserSchema, LoginSchema
 from sqlalchemy.orm import Session
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+def crate_token(id: int):
+    token = f"aowadawo{id}"
+    return token
 
 
 @auth_router.get("/")
@@ -31,3 +36,16 @@ async def create_account(user_schema: UserSchema, session: Session = Depends(get
     session.add(new_user)
     session.commit()
     return {"message": f"Conta criada com sucesso! {user_schema.email}" }
+
+
+
+@auth_router.post("/login")
+async def login(login_schema: LoginSchema, session: Session = Depends(get_session)):
+    user = session.query(User).filter(User.email == login_schema.email).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Email não encontrado.")
+    access_token = crate_token(user.id)
+    return{
+        "access_token": access_token,
+        "token_type": "bearer"
+        }

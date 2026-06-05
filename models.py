@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, String, Integer, Boolean, Float, ForeignKey
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy_utils import ChoiceType
 
 # cria a conexão do seu banco
@@ -9,11 +9,6 @@ db = create_engine("sqlite:///banco.db")
 Base = declarative_base()
 
 
-
-# Clean the table USERS
-# session=get_session()
-# session.query(User).delete()
-# session.commit()
 
 # criar as classes/tabelas do banco de dados
 class User(Base):  # USUARIO
@@ -32,6 +27,8 @@ class User(Base):  # USUARIO
         self.password = password
         self.active = active
         self.admin = admin
+
+
 # PEDIDO
 class Order(Base):
     __tablename__ = "ORDERS"
@@ -46,12 +43,17 @@ class Order(Base):
     status = Column("STATUS", String) #pending, canceled, completed
     user = Column("USER",ForeignKey("USERS.ID")) #passa o nome da tabela e o nome do campo da chave estrangeira
     price = Column("PRICE", Float) 
-    #itens = 
+    itens = relationship("ItemOrder", cascade = "all, delete")
 
     def __init__(self, user, status="PENDING", price=0.0):
         self.user = user
         self.status = status
         self.price = price
+
+    def price_calculation(self):
+        self.price = sum(item.price_item * item.quantity for item in self.itens)
+
+
 
 # ITENS DO PEDIDO
 class ItemOrder(Base):

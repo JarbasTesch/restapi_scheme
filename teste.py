@@ -3,6 +3,18 @@ from models import User, db
 from sqlalchemy.orm import sessionmaker
 
 
+
+
+
+# Clean the table USERS
+# session=get_session()
+# session.query(User).delete()
+# session.commit()
+
+
+
+
+
 def get_session():
     try:
         Session = sessionmaker(bind=db)

@@ -75,3 +75,28 @@ async def add_item_to_order(id_pedido: int,
     return {"message": f"Item adicionado ao pedido {order.id} com sucesso!",
             "item_id": order_item.id,
             "order_price": order.price}
+
+
+@order_router.post("/order/remove_item/{id_order_item}")
+async def remove_item_from_order(id_order_item: int,
+                            session: Session = Depends(get_session),
+                            user: User = Depends(verify_token)):
+    
+    order_item = session.query(ItemOrder).filter(ItemOrder.id == id_order_item).first()
+    
+    order = session.query(Order).filter(Order.id == order_item.order_id).first()
+    
+    if not order_item:
+        raise HTTPException(status_code=404, detail="Item do pedido não encontrado.")
+    if not user.admin and user.id != order_item.order.user:
+        raise HTTPException(status_code=403, detail="Você não tem permissão para remover itens deste pedido.")
+    
+    session.delete(order_item)
+    order.price_calculation()
+    session.commit()
+    
+    return {"message": f"Item removido do pedido {order_item.order.id} com sucesso!",
+            "order_price": order.price,
+            "order": order}
+
+    #TODO: corrigir remoção de item. Não está removendo.

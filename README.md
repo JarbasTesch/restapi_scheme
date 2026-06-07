@@ -101,7 +101,7 @@ The API will be available at `http://127.0.0.1:8000`. Interactive docs at `http:
 | Method | Endpoint | Description | Auth required |
 |--------|----------|-------------|---------------|
 | GET | `/orders/` | Default orders route | No |
-| POST | `/orders/order` | Create a new order | No |
+| POST | `/orders/order` | Create a new order | Yes |
 | POST | `/orders/order/add_item/{order_id}` | Add an item to an order | Yes |
 | POST | `/orders/order/remove_item/{item_order_id}` | Remove an item from an order | Yes |
 | POST | `/orders/order/cancel/{order_id}` | Cancel an order | Yes |

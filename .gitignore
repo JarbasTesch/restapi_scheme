@@ -1,0 +1,17 @@
+# Ambiente virtual
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Banco de dados local
+*.db
+
+# Variáveis de ambiente
+.env
+
+# Alembic - arquivos gerados automaticamente
+alembic/README
+alembic/script.py.mako

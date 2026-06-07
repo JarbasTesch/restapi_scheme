@@ -43,7 +43,12 @@ class Order(Base):
     status = Column("STATUS", String) #pending, canceled, completed
     user = Column("USER",ForeignKey("USERS.ID")) #passa o nome da tabela e o nome do campo da chave estrangeira
     price = Column("PRICE", Float) 
-    itens = relationship("ItemOrder", cascade = "all, delete")
+    itens = relationship(
+    "ItemOrder",
+    back_populates="order",
+    cascade="all, delete-orphan"
+    )
+
 
     def __init__(self, user, status="PENDING", price=0.0):
         self.user = user
@@ -64,7 +69,8 @@ class ItemOrder(Base):
     topping = Column("TOPPING", String)
     size = Column("SIZE", String)
     price_item = Column("PRICE_ITEM", Float)
-    order = Column("ORDER", ForeignKey("ORDERS.ID")) #passa o nome da tabela e o nome do campo da chave estrangeira
+    order_id = Column("ORDER_ID", ForeignKey("ORDERS.ID"))
+    order = relationship("Order", back_populates="itens")
 
     def __init__(self, order, quantity, topping, size, price_item):
         self.order = order

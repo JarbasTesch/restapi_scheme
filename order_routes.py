@@ -19,14 +19,15 @@ async def orders():
 
 
 @order_router.post("/order")
-async def create_order(order_schema: OrderSchema, session: Session = Depends(get_session)):
+async def create_order(session: Session = Depends(get_session), user: User = Depends(verify_token)):
     """Create a new order"""
-    new_order = Order(user=order_schema.user_id)
-    print(new_order)
+
+    new_order = Order(user=user.id)  # ideal usar o usuário autenticado
+
     session.add(new_order)
     session.commit()
-    return {"message": f"Pedido criado com sucesso! {new_order.id}"}
 
+    return {"message": f"Pedido criado com sucesso! {new_order.id}"}
 
 @order_router.post("/order/cancel/{order_id}")
 async def cancel_order(order_id: int, session: Session = Depends(get_session), user: User = Depends(verify_token)):
